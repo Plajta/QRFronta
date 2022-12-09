@@ -20,7 +20,7 @@ poté co tohle máme, tak redis spustíme:
 pokud chceme dělat nějaké queries do databáze:
 `redis-cli`
 
-
+# Android QR app
 
 install qr_code app
 
