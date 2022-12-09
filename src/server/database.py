@@ -43,11 +43,16 @@ class redisbase:
 
     def retrieve_all(self):
         try:
-            peoplelist = self.Redis.get("people")[:-1].split(";")
+            peoplelist = self.Redis.get("people")[:-1]
+            if peoplelist == None: peoplelist = []
+            else: peoplelist = peoplelist.split(";")
+            
             people = []
-            for peep in peoplelist:
-                # print(uuid.UUID(liduch))
-                people.append(uuid.UUID(peep))
+            if len(peoplelist) != 0:
+                for peep in peoplelist:
+                    # print(uuid.UUID(liduch))
+                    people.append(uuid.UUID(peep))
+            
             return people
         except Exception as E:
             print(E)

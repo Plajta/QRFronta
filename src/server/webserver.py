@@ -2,9 +2,11 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
 import yaml
 import json
+from engineio.payload import Payload
+import time
 
 # custom import
-from database import *
+from database import redisbase
 
 # Define socket host and port
 # running on port 5000
@@ -12,6 +14,9 @@ from database import *
 app = Flask(__name__)
 
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+#this is not secure
+Payload.max_decode_packets = 100
 
 with open("credentials.yml", "r") as stream:
         try:
@@ -48,7 +53,8 @@ def handle_message(data):
 
     if data["data"] == "request-data":
         
-        users = Redis_Retrieve()
+        RedisBase = redisbase()
+        users = RedisBase.retrieve_all()
 
         if users == None:
             data_dict = {
@@ -68,6 +74,8 @@ def handle_message(data):
 
         data_json = json.dumps(data_dict)
         print(data_json)
+        
+        time.sleep(1)
         socketio.emit("update", data_json)
 
 

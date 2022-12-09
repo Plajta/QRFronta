@@ -73,18 +73,20 @@
                     }
                 }
             }
+
+            function RequestData(socket){
+
+                socket.emit("message", {data: "request-data"});
+                socket.on("update", (data) => {
+                    console.log("Update")
+                    console.log(data)
+                })
+            }
             
-            socket.on('connect', function() {
-                while(True){
-                    socket.emit("message", {data: "request-data"});
-                    socket.on("update", (data) => {
-                        console.log("Update")
-                        console.log(data)
-                        setTimeout(1000, UpdateValues(data));  
-                    })
-                }
-                
-            });
+            socket.on("connect", function() {
+                setInterval(function(){RequestData(socket)}, 1000)
+            })
+
         </script>
     </body>
 </html>
