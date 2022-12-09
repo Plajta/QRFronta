@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
+  <link rel="icon" type="image/x-icon" href="../static/img/Q.svg">
   <meta charset="UTF-8">
   <title>SuperCringe Panel</title>
   <link rel="stylesheet" href="../static/styles/style.css">
 
 </head>
-<body>
+<body id="bounds">
+    <img src="../static/img/Q-lite.svg"> </img>
+
+    
+
+
 <!-- partial:index.partial.html -->
+<form autocomplete='off' action = "http://localhost:5000/login" method = "post" class='form' style="margin-top: 0em;">
+  <div class='control' id="bounds">
 <h1 style="text-align: center; font-size: 32px;">SuperCringe Admin Panel</h1>
 <form autocomplete='off' action = "http://localhost:5000/login" method = "post" class='form'>
   <div class='control'>
     <h1>
       Login
     </h1>
+    
   </div>
   <div class='control block-cube block-input'>
     <input name='username' placeholder='Uživatelské jméno' type='text' id="fname" >
@@ -53,11 +62,7 @@
       Log In
     </div>
   </button>
-  <div class='credits'>
-    <a href='https://codepen.io/marko-zub/' target='_blank'>
-        Tohle GUI máme od marko-zub z codepen, díky!
-    </a>
-  </div>
+
 </form>
 <!-- partial -->
   
