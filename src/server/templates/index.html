@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "../static/styles/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
     </head>
@@ -26,10 +26,14 @@
         </div>
         <script type="text/javascript" charset="utf-8">
             var socket = io("127.0.0.1:5000");
-            function UpdateValues(data){
+            function UpdateValues(data_json){
+
                 var Count = document.getElementById("Count")
                 var Mean = document.getElementById("Mean")
                 var UserField = document.getElementById("Users")
+
+                data = JSON.parse(data_json)
+                console.log(data)
 
                 //modify user count
                 Count.innerHTML = "Počet uživatelů: " + data["user_len"]
@@ -47,16 +51,24 @@
                     var Name = document.createElement("p")
                     var ID = document.createElement("p")
                     var DelIcon = document.createElement("i")
-
                     
+                    
+
+                    if(data["user_data"].length == 0){
+                        console.log("Žádné data")
+                    }
+                    else{
+                        console.log("nějaké data")
+                    }
                 }
             }
-
+            
             socket.on('connect', function() {
-                while (true){
+                while(True){
                     socket.emit("message", {data: "request-data"});
-                    socket.on("message", (data) => {
+                    socket.on("update", (data) => {
                         console.log("Update")
+                        console.log(data)
                         setTimeout(1000, UpdateValues(data));  
                     })
                 }

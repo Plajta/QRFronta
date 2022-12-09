@@ -49,13 +49,26 @@ def handle_message(data):
     if data["data"] == "request-data":
         
         users = Redis_Retrieve()
-        
-        data_dict = {
-            "user_len": len(users),
-            "user_data": users
-        }
 
-        socketio.emit(data_dict)
+        if users == None:
+            data_dict = {
+                "user_len": 0,
+                "user_data": []
+            }
+        elif len(users) == 0:
+            data_dict = {
+                "user_len": len(users),
+                "user_data": []
+            }
+        else:
+            data_dict = {
+                "user_len": len(users),
+                "user_data": users
+            }
+
+        data_json = json.dumps(data_dict)
+        print(data_json)
+        socketio.emit("update", data_json)
 
 
 if __name__ == "__main__":
