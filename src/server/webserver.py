@@ -6,7 +6,7 @@ from engineio.payload import Payload
 import time
 
 # custom import
-from database import redisbase
+from database import RedisBase
 
 # Define socket host and port
 # running on port 5000
@@ -53,8 +53,8 @@ def handle_message(data):
 
     if data["data"] == "request-data":
         
-        RedisBase = redisbase()
-        users = RedisBase.retrieve_all()
+        redisbase = RedisBase()
+        users = redisbase.retrieve_all()
 
         if users == None:
             data_dict = {
