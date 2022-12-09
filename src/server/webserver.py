@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send, emit
 import yaml
 
 # custom import
@@ -45,5 +45,7 @@ def login():
 def handle_message(data):
     print('received message: ' + data)
 
+@socketio.on("message")
+
 if __name__ == "__main__":
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0")
