@@ -170,15 +170,14 @@ nav{
 /*Actual code*/
 #Users{
   height:100%;
-  margin-right: 1%;
-  margin-bottom: 1%;
-  width: 300px;
   flex-wrap: wrap;
   display: flex; 
 }
-#User{
+.User{
   background-color: rgb(151, 141, 141); 
-  width: 100%; 
+  width: 300px;
+  margin-right: 1%; 
+  margin-bottom: 1%;
   height: 75px; 
   border-radius: 10px;
 }
