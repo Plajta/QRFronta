@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
+    <body style="text-align: center;">
+        <h1>SuperCringe Admin panel</h1>
+
+        <div id="Login">
+            <p>K tomu aby jste se dostali k admin panelu se musíte přihlásit.</p>
+            <form action = "http://localhost:5000/login" method = "post">
+                <label for="fname">Username:</label>
+                <input type="text" id="fname" name="username"><br>
+                <label for="lname">Heslo:</label>
+                <input type="password" id="lname" name="password"><br><br>
+                <input type="submit" value="Submit">
+             </form>
+        </div>
+    </body>
+</html>
