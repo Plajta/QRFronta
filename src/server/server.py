@@ -1,5 +1,6 @@
 import requests
 import socket
+import uuid
 
 # custom import
 from database import *
@@ -15,19 +16,37 @@ server_socket.bind((SERVER_HOST, SERVER_PORT))
 server_socket.listen()
 print('Listening on port %s ...' % SERVER_PORT)
 
-while True:    
-    # Wait for client connections
-    client_connection, client_address = server_socket.accept()
+try:
+    while True:    
+        # Wait for client connections
+        client_connection, client_address = server_socket.accept()
 
-    # Get the client request
-    dataFromClient = client_connection.recv(1024).decode()
-    print(dataFromClient)
+        # Get the client request
+        dataFromClient = client_connection.recv(1024).decode()
+        response = "OK"
+        match dataFromClient:
+            case "Novej":
+                lidi = Redis_Retrieve() or []
+                UUID = uuid.uuid1()
+                #print(str(len(lidi)+1)+", "+str(UUID))
+                lidi.append(UUID)
+                Redis_Set(lidi)
+                response = str(UUID)
+            case "Starej":
+                retrieved = Redis_Retrieve()
+                if len(retrieved):
+                    Redis_Set(retrieved[:-1])
+                response = str(UUID) + "    odebráno"
+            case "Zadnej":
+                Redis_delete()
 
-    # Send HTTP response
-    response = "Cool"
-    #client_connection.sendall(response.encode()) tohle by se pak mohlo hodit
-    client_connection.send(response.encode())
-    client_connection.close()
+        print(Redis_Retrieve())
 
-# Close socket
-server_socket.close()
+        # Send HTTP response
+        #client_connection.sendall(response.encode()) tohle by se pak mohlo hodit
+        client_connection.send(response.encode())
+        client_connection.close()
+except KeyboardInterrupt:
+    print("End!")
+    # Close socket
+    server_socket.close()
