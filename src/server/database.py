@@ -6,38 +6,54 @@ Bruh this is kinda simple lol, why not
 import redis
 import uuid
 
-redis_host = "localhost"
 
-redis_port = 6379
-redis_password = ""
+class redisbase:
+    def __init__(self, redis_host="localhost", redis_port=6379, redis_password=""):
+        self.Redis = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
 
-# The decode_repsonses flag here directs the client to convert the responses from Redis into Python strings
-# using the default encoding utf-8.  This is client specific.
-Redis = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
+    def add(self, useruuid, username):
+        try:
+            people = self.retrieve_raw() or ""
+            people = people+str(useruuid)+","+username+";"
+            self.set(people)
+        except Exception as E:
+            print(E)
 
-def Redis_Set(lidi):
-    try:
-        zapis = ""
-        for liduch in lidi:
-            zapis = zapis+str(liduch)+";"
-        zapis = zapis[:-1]
-        Redis.set("people", zapis)
-    except Exception as E:
-        print(E)
+    def set(self, people:list):
+        try:
+            write = ""
+            for peep in people:
+                write = write + str(peep) + ";"
+            write = write[:-1]
+            self.set(write)
+        except Exception as E:
+            print(E)
 
-def Redis_Retrieve():
-    try:
-        listlidi = Redis.get("people").split(";")
-        lidi = []
-        for liduch in listlidi:
-            #print(uuid.UUID(liduch))
-            lidi.append(uuid.UUID(liduch))
-        return lidi
-    except Exception as E:
-        print(E)
+    def set(self, people:str):
+        try:
+            self.Redis.set("people", people)
+        except Exception as E:
+            print(E)
 
-def Redis_delete():
-    try:
-        Redis.delete("people")
-    except Exception as E:
-        print(E)
+    def retrieve_raw(self):
+        try:
+            return self.Redis.get("people")
+        except Exception as E:
+            print(E)
+
+    def retrieve_all(self):
+        try:
+            peoplelist = self.Redis.get("people")[:-1].split(";")
+            people = []
+            for peep in peoplelist:
+                # print(uuid.UUID(liduch))
+                people.append(uuid.UUID(peep))
+            return people
+        except Exception as E:
+            print(E)
+
+    def delete(self):
+        try:
+            self.Redis.delete("people")
+        except Exception as E:
+            print(E)
