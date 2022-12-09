@@ -24,21 +24,20 @@ try:
         # Get the client request
         dataFromClient = client_connection.recv(1024).decode()
         response = "OK"
-        match dataFromClient:
-            case "Novej":
-                lidi = Redis_Retrieve() or []
-                UUID = uuid.uuid1()
-                #print(str(len(lidi)+1)+", "+str(UUID))
-                lidi.append(UUID)
-                Redis_Set(lidi)
-                response = str(UUID)
-            case "Starej":
-                retrieved = Redis_Retrieve()
-                if len(retrieved):
-                    Redis_Set(retrieved[:-1])
-                response = str(UUID) + "    odebráno"
-            case "Zadnej":
-                Redis_delete()
+        if dataFromClient == "Novej":
+            lidi = Redis_Retrieve() or []
+            UUID = uuid.uuid1()
+            #print(str(len(lidi)+1)+", "+str(UUID))
+            lidi.append(UUID)
+            Redis_Set(lidi)
+            response = str(UUID)
+        elif dataFromClient == "Starej":
+            retrieved = Redis_Retrieve()
+            if len(retrieved):
+                Redis_Set(retrieved[:-1])
+            response = str(UUID) + "    odebráno"
+        elif dataFromClient  == "Zadnej":
+            Redis_delete()
 
         print(Redis_Retrieve())
 
