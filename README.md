@@ -93,3 +93,5 @@ Depends on the Linux flavor, but commonly:
 
 `sudo apt-get install gstreamer1.0-dev`     
 
+používali jsme tyto poggers package: 
+`flask`, `flask-socketio`, `gevent-websocket`, `eventlet`, `redis`
