@@ -43,9 +43,8 @@ def login():
 
 @socketio.on('message')
 def handle_message(data):
-    print('received message: ' + data)
+    print('received message: ' + data["data"])
 
-@socketio.on("message")
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0")
+    socketio.run(app, host="127.0.0.1", port=5000)

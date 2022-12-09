@@ -17,8 +17,13 @@
         </div>
         <script type="text/javascript" charset="utf-8">
             var socket = io("127.0.0.1:5000");
+            function UpdateValues(){
+                console.log("Pass")
+            }
+
             socket.on('connect', function() {
-                socket.emit('my event', {data: 'I\'m connected!'});
+                socket.emit("message", {data: "connection"});
+                setTimeout(1000, UpdateValues())
                 
             });
         </script>
