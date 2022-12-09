@@ -1,20 +1,64 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
-    </head>
-    <body style="text-align: center;">
-        <h1>SuperCringe Admin panel</h1>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - CSS Cube Login Form</title>
+  <link rel="stylesheet" href="../static/styles/style.css">
 
-        <div id="Login">
-            <p>K tomu aby jste se dostali k admin panelu se musíte přihlásit.</p>
-            <form action = "http://localhost:5000/login" method = "post">
-                <label for="fname">Username:</label>
-                <input type="text" id="fname" name="username"><br>
-                <label for="lname">Heslo:</label>
-                <input type="password" id="lname" name="password"><br><br>
-                <input type="submit" value="Submit">
-             </form>
-        </div>
-    </body>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<form autocomplete='off' action = "http://localhost:5000/login" method = "post" class='form'>
+  <div class='control'>
+    <h1>
+      Sign In
+    </h1>
+  </div>
+  <div class='control block-cube block-input'>
+    <input name='username' placeholder='Username' type='text' id="fname" >
+    <div class='bg-top'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg-right'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg'>
+      <div class='bg-inner'></div>
+    </div>
+  </div>
+  <div class='control block-cube block-input'>
+    <input name='password' placeholder='Password' type='password' id="lname">
+    <div class='bg-top'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg-right'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg'>
+      <div class='bg-inner'></div>
+    </div>
+  </div>
+  <button class='btn block-cube block-cube-hover' type='submit' value="Submit">
+    <div class='bg-top'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg-right'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='bg'>
+      <div class='bg-inner'></div>
+    </div>
+    <div class='text'>
+      Log In
+    </div>
+  </button>
+  <div class='credits'>
+    <a href='https://codepen.io/marko-zub/' target='_blank'>
+      My other codepens
+    </a>
+  </div>
+</form>
+<!-- partial -->
+  
+</body>
 </html>
