@@ -1,3 +1,8 @@
+"""
+Bruh this is kinda simple lol, why not
+
+"""
+
 import redis
 
 redis_host = "localhost"
@@ -5,23 +10,26 @@ redis_host = "localhost"
 redis_port = 6379
 redis_password = ""
 
+# The decode_repsonses flag here directs the client to convert the responses from Redis into Python strings
+# using the default encoding utf-8.  This is client specific.
+Redis = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
 
-def hello_redis():
-    """Example Hello Redis Program"""
-   
-    # step 3: create the Redis Connection object
+def Redis_Add(num):
     try:
-   
-        # The decode_repsonses flag here directs the client to convert the responses from Redis into Python strings
-        # using the default encoding utf-8.  This is client specific.
-        r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
-   
-        # step 4: Set the hello message in Redis
-        r.set("msg:hello", "Hello Redis!!!")
+        Redis.set("count", num)
+    except Exception as E:
+        print(E)
 
-        # step 5: Retrieve the hello message from Redis
-        msg = r.get("msg:hello")
-        print(msg)        
+def Redis_Retrieve():
+    try:
+        count = Redis.get("count")
+        print("number of connected_devices = " + count)        
    
-    except Exception as e:
-        print(e)
+    except Exception as E:
+        print(E)
+
+def Redis_delete():
+    try:
+        Redis.delete("count")
+    except Exception as E:
+        print(E)
