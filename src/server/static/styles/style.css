@@ -11,11 +11,13 @@ body {
 
 .users{
   flex-wrap: wrap;
+  display: flex;  
 }
 
 .user{
+  margin-right: 1%;
   margin-bottom: 1%;
-  width: 33%;
+  width: 300px;
 }
 
 .main{
