@@ -23,8 +23,8 @@ def Redis_Add(num):
 def Redis_Retrieve():
     try:
         count = Redis.get("count")
-        print("number of connected_devices = " + count)        
-   
+        return count      
+
     except Exception as E:
         print(E)
 
