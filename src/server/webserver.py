@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, url_for, flash, redirect
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO
 import yaml
 
 # custom import
@@ -9,18 +10,20 @@ from database import *
 
 app = Flask(__name__)
 
+socketio = SocketIO(app, cors_allowed_origins="*")
+
 with open("credentials.yml", "r") as stream:
         try:
             data = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
 
-@app.route("/")
-def Response():
-    return "Zde nemáš co dělat..."
+#
+# Standart Flask
+#
 
 @app.route("/admin")
-def admin_load():
+def Response():
     return render_template("login.html")
 
 @app.route("/login", methods = ['POST'])
@@ -34,6 +37,13 @@ def login():
     else:
         return "Nepovedlo se :(, špatné jméno nebo heslo"
 
+#
+# SocketIO
+#
+
+@socketio.on('message')
+def handle_message(data):
+    print('received message: ' + data)
 
 if __name__ == "__main__":
-    app.run()
+    socketio.run(app)
