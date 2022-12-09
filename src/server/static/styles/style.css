@@ -9,6 +9,20 @@ body {
   letter-spacing: 0.05em;
 }
 
+.users{
+  flex-wrap: wrap;
+}
+
+.user{
+  margin-bottom: 1%;
+  width: 33%;
+}
+
+.main{
+  width: 80%;
+  margin-left: 5%;
+  margin-right: 15%;
+}
 h1 {
   font-size: 23px;
 }
@@ -161,3 +175,10 @@ nav{
   font-size: 50px;
   letter-spacing: 20px;
 }
+
+img{
+  float:right;
+  margin-top: 30%;
+  margin-right: 30%;
+}
+
