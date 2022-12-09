@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
 import yaml
+import json
 
 # custom import
 from database import *
@@ -44,6 +45,17 @@ def login():
 @socketio.on('message')
 def handle_message(data):
     print('received message: ' + data["data"])
+
+    if data["data"] == "request-data":
+        
+        users = Redis_Retrieve()
+        
+        data_dict = {
+            "user_len": len(users),
+            "user_data": users
+        }
+
+        socketio.emit(data_dict)
 
 
 if __name__ == "__main__":
