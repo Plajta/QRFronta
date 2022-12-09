@@ -13,3 +13,9 @@ $ rm redis-stable.tar.gz
 $ cd /usr/local/lib/redis-stable/
 $ make && make install
 ```
+
+poté co tohle máme, tak redis spustíme:
+`redis-server`
+
+pokud chceme dělat nějaké queries do databáze:
+`redis-cli`
