@@ -28,17 +28,17 @@ have been installed kivy
 
 install camera4kivy
 
-## Windows
+## Windows      to jen pro okna
 
 `pip3 install pillow pyzbar camera4kivy`
 
-## MacOS
+## MacOS         tohle nikdo ne ma
 
 `brew install zbar`
 
 `pip3 install pillow pyzbar camera4kivy`
 
-## Linux
+## Linux      to jen pro linux
 
 `sudo apt-get install libzbar0`
 
@@ -50,7 +50,7 @@ Camera4Kivy depends on Buildozer 1.3.0 or later
 
 `pip3 install buildozer`
 
-`sudo apt-get install gettext`  some hosts already have this installed.
+`sudo apt-get install gettext`  some hosts already have this installed. bez toho u mě nefungovalo
 
 The example includes a [camera provider](https://github.com/Android-for-Python/camera4kivy#android-camera-provider) and a [buildozer.spec](https://github.com/Android-for-Python/camera4kivy#buildozerspec).
 
@@ -72,18 +72,8 @@ Camera4Kivy depends on a 'camera provider' to access the OS camera api. On most 
 | Android     | [CameraX](https://github.com/Android-for-Python/camera4kivy#android-camera-provider)                      |  Android >= 5.0 |
 | iOS         | [AVFoundation](https://github.com/Android-for-Python/camera4kivy#avfoundation)                      |
 
-Like Kivy, the first available provider is selected. Some camera provider specific behavior should be expected. For example a switch to a camera that does not exist will be ignored on MacOS and Rasberry Pi, but generate a screen message with OpenCV or GStreamer. Camera resolution defaults to the maximum available camera provider resolution, except on Raspberry Pi where the default is (1024, 768).
 
-You can remove a camera provider ('picamera' in the example below) from the above lists by inserting this code **before** `from kivy.app import App`.
-
-```python
-from kivy import kivy_options
-providers= list(kivy_options['camera'])
-providers.remove('picamera')
-kivy_options['camera'] = tuple(providers)
-```
-
-### Android Camera Provider
+### Android Camera Provider    to musi byt v každem projektu
 
 `cd <project directory>`
 
@@ -91,19 +81,15 @@ kivy_options['camera'] = tuple(providers)
 
 `rm -rf camerax_provider/.git`
 
-Set `p4a.hook` to enable the app's use of the camera provider.
-
-`p4a.hook = camerax_provider/gradle_options.py`
-
-### OpenCV
+### OpenCV          pro startovani na linuksu
 
 `pip3 install opencv-python`
 
-### GStreamer
+### GStreamer         taky pro linuks
 
 Depends on the Linux flavor, but commonly:
 
 `sudo apt-get install gstreamer-1.0`
 
-`sudo apt-get install gstreamer1.0-dev`
+`sudo apt-get install gstreamer1.0-dev`     
 
