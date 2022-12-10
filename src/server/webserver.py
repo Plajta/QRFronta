@@ -14,15 +14,28 @@ from database import RedisBase
 app = Flask(__name__)
 
 socketio = SocketIO(app, cors_allowed_origins="*")
+redisbase = RedisBase()
 
 #this is not secure
 Payload.max_decode_packets = 100
+Abort = False
 
 with open("credentials.yml", "r") as stream:
         try:
             data = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
+
+#
+# Function definitions
+#
+def DB_Check(socketio, optional = True):
+    users_check = redisbase.retrieve_all()
+    if len(users_check) == 0 and optional:
+        socketio.emit("is_successful", "true")
+    else:
+        socketio.emit("is_successful", "false")
+
 
 #
 # Standart Flask
@@ -51,9 +64,7 @@ def login():
 def handle_message(data):
     print('received message: ' + data["data"])
 
-    if data["data"] == "request-data":
-        
-        redisbase = RedisBase()
+    if data["data"] == "request-data" and Abort == False:
         users = redisbase.retrieve_all()
 
         if users == None:
@@ -78,6 +89,22 @@ def handle_message(data):
         time.sleep(1)
         socketio.emit("update", data_json)
 
+@socketio.on("create-new")
+def create_new(data):
+    redisbase.delete_all()
+    DB_Check(socketio)
+
+@socketio.on("remove-all") #its basically the same
+def remove_all(data):
+    redisbase.delete_all()
+    DB_Check(socketio)
+
+@socketio.on("abort")
+def abort(data):
+    redisbase.delete_all()
+    Abort = True #to stop website from refreshing
+
+    DB_Check(socketio, Abort)
 
 if __name__ == "__main__":
     socketio.run(app, host="127.0.0.1", port=5000)

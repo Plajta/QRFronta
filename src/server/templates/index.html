@@ -12,9 +12,9 @@
     <div class="main">
         <h1>SuperCringe Admin panel</h1>
         <nav>  
-            <i class="fa fa-plus-square" aria-hidden="true"></i>
-            <i class="fa fa-trash" aria-hidden="true"></i>
-            <i class="fa fa-ban" aria-hidden="true"></i>
+            <i class="fa fa-plus-square" aria-hidden="true" onclick="CreateNew()"></i>
+            <i class="fa fa-trash" aria-hidden="true" onclick="DeleteAll()"></i>
+            <i class="fa fa-ban" aria-hidden="true" onclick="Abort()"></i>
         </nav>
 
         <div id="MainPanel">
@@ -62,6 +62,9 @@
         </div>
     </div>
         <script type="text/javascript" charset="utf-8">
+            var Decisions = [false, false, false]
+            var Decision_actions = ["create-new", "remove-all", "abort"] //bruh mohl jsem to udělat v dictionaries
+
             var socket = io("127.0.0.1:5000");
             function UpdateValues(data_json){
 
@@ -128,11 +131,47 @@
                     UpdateValues(data)
                 })
             }
+
+            //Some other functions
+            function CreateNew(){
+                var result = confirm("Chceš doopravdy vytvořit novou frontu?")
+                if (result){
+                    Decisions[0] = true
+                }
+            }
+
+            function DeleteAll(){
+                var result = confirm("Chceš doopravdy smazat všechny záznamy?")
+                if (result){
+                    Decisions[1] = true
+                }
+            }
+
+            function Abort(){
+                var result = confirm("Chceš doopravdy vypnout přihlašování do fronty?")
+                if (result){
+                    Decisions[2] = true
+                }
+            }
             
             socket.on("connect", function() {
                 setInterval(function(){RequestData(socket)}, 1000)
-            })
 
+                for(i = 0; i < Decisions.length; i++){
+                    if(Decisions[i]){
+                        socket.emit(Decision_actions[i], "true")
+                        socket.on("is_successful", (data_true) => {
+                            if(data_true == "true"){
+                                alert("Operace provedena úspěšně")
+                            }
+                            else{
+                                alert("Operace nebyla provedena úspěšně")
+                            }
+                        })
+                        Decisions[i] = false
+                    }
+                }
+            })
         </script>
     </body>
 </html>
