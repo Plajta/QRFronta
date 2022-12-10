@@ -76,6 +76,7 @@ class QRReader(Preview, CommonGestures):
 
             try:
                 proj, queue, ip, port = text.split(";")
+                print(proj, queue, ip, port)
                 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 clientSocket.connect((ip, int(port)))
 
@@ -85,8 +86,8 @@ class QRReader(Preview, CommonGestures):
                 uid = dataFromServer.decode()
                 print(uid)
 
-                with open("HopeIllNeverDeleteItAgain.txt", "a") as f:
-                    f.write(f"{text};{uid}")
+                with open("HopeIllNeverDeleteItAgain.txt", "w") as f:
+                    f.write(f"{text};{uid}\n")
 
             except Exception as E:
                 print(E)
