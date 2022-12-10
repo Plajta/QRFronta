@@ -25,9 +25,9 @@ pokud chceme dělat nějaké queries do databáze:
 
 install qr_code app
 
-have been installed kivy
-
 install camera4kivy
+
+nainstaluje čtečku qr kódů a kivy 
 
 ## Windows      to jen pro Windows
 
@@ -46,19 +46,19 @@ install camera4kivy
 
 ## Android
 
-Camera4Kivy depends on Buildozer 1.3.0 or later
+Camera4Kivy závisí Buildozer 1.3.0 nebo pozdějších verzích
 
 `pip3 install buildozer`
 
-`sudo apt-get install gettext`  some hosts already have this installed. bez toho u mě nefungovalo
+`sudo apt-get install gettext`  některá zařízení mají již nainstalováno ovšem dejte si pozor že u vás je instalován v opačném případě nazaručujeme funkčnost.
 
-The example includes a [camera provider](https://github.com/Android-for-Python/camera4kivy#android-camera-provider) and a [buildozer.spec](https://github.com/Android-for-Python/camera4kivy#buildozerspec).
+Tento příklad obsahuje [camera provider](https://github.com/Android-for-Python/camera4kivy#android-camera-provider) a také [buildozer.spec](https://github.com/Android-for-Python/camera4kivy#buildozerspec).
 
 ## Camera Provider
 
-Camera4Kivy depends on a 'camera provider' to access the OS camera api. On most platforms this uses the same provider as Kivy, with modified defaults.
+Camera4Kivy závysí na 'camera provider' pro zpřístupnění OS api. Na většině platforem využívá stejného přístupu jako Kivy, s upravenými defaultními hodnotami.
 
-| Platform    | Provider      | Requires       |
+| Platforma   | Poskytovatel  | Požadavky      |
 |-------------|---------------|----------------|
 | Windows     | [OpenCV](https://github.com/Android-for-Python/camera4kivy#opencv)                      |
 |             | [Gstreamer](https://github.com/Android-for-Python/camera4kivy#gstreamer)                      |
@@ -81,17 +81,17 @@ Camera4Kivy depends on a 'camera provider' to access the OS camera api. On most 
 
 `rm -rf camerax_provider/.git`
 
-### OpenCV          pro startovani na linuksu
+### OpenCV          pro startovani na linuxu
 
 `pip3 install opencv-python`
 
-### GStreamer         taky pro linuks
+### GStreamer         taky pro linux
 
-Depends on the Linux flavor, but commonly:
+Záleží na příchuti vašeho LInuxu, ale ve většině případů:
 
 `sudo apt-get install gstreamer-1.0`
 
 `sudo apt-get install gstreamer1.0-dev`     
 
-používali jsme tyto poggers package: 
+používali jsme tyto package: 
 `flask`, `flask-socketio`, `gevent-websocket`, `eventlet`, `redis`
