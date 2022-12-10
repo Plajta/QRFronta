@@ -1,8 +1,9 @@
-# EmptyRepo
-vskutku
+# Frequonta
+Toto je software vytvořený na Co - Heckathonu v prosinci 2022 na SPŠE Plzeň.
+Jedná se o virtuální frontu do které se přihlásíte naskenováním QR códu v mobilní aplikaci. Vidíte kolikátí ve frontě jste a aproximaci času kdy se dostanete na řadu. Máme zde i webový server s admin stránkou pro správu front.
 
-vskutku budeme používat redis lol
-yo zde je nějakej redis setup:
+
+# Tutoriál pro instalaci databáze redis
 ```
 $ curl -s -o redis-stable.tar.gz "http://download.redis.io/redis-stable.tar.gz"
 $ sudo su root
@@ -28,12 +29,11 @@ have been installed kivy
 
 install camera4kivy
 
-## Windows      to jen pro okna
+## Windows      to jen pro Windows
 
 `pip3 install pillow pyzbar camera4kivy`
 
-## MacOS         tohle nikdo ne ma
-
+## MacOS        to jen pro Mac 
 `brew install zbar`
 
 `pip3 install pillow pyzbar camera4kivy`
