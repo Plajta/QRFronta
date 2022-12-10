@@ -6,7 +6,7 @@ from database import RedisBase
 from misc import *
 
 # Define socket host and port
-SERVER_HOST = '127.0.0.1'
+SERVER_HOST = '0.0.0.0'
 SERVER_PORT = 9090
 
 # Create socket
@@ -28,7 +28,7 @@ while True:
     command = dataFromClient.split(";")
     if len(command) == 2:
         if command[0] == "new-user":
-            if isBase64(command[1].encode("ascii")):
+            if isBase64(command[1].encode("utf-8")):
                 UUID = uuid.uuid1()
                 database.add(UUID, command[1])
                 response = str(UUID)

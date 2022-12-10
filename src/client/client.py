@@ -23,7 +23,7 @@ while i:
             clientSocket.connect(("127.0.0.1", 9090))
             name = line[len(splitinput[0])+1:]
             try:
-                data = "new-user;" + base64.b64encode(name.encode("ascii")).decode("ascii")
+                data = "new-user;" + base64.b64encode(name.encode("utf-8")).decode("utf-8")
                 clientSocket.send(data.encode())
                 dataFromServer = clientSocket.recv(1024)
                 uid = uuid.UUID(dataFromServer.decode())
