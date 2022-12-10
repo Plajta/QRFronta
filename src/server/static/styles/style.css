@@ -161,10 +161,10 @@ h1 {
 }
 
 nav{
-  float: right;
+  /*float: right;*/
   margin-right: 5%;
-  font-size: 50px;
-  letter-spacing: 20px;
+  font-size: 25px;
+  letter-spacing: 10px;
 }
 
 /*Actual code*/
