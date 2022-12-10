@@ -73,8 +73,18 @@ class QRReader(Preview, CommonGestures):
 
             global name
             global last
+            global gotit
 
             try:
+                if gotit == 1:
+                    print("1")
+                    return
+                elif gotit == 0:
+                    gotit = 1
+                    print(text)
+                else:
+                    print("2")
+                    return
                 proj, queue, ip, port = text.split(";")
                 print(proj, queue, ip, port)
                 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -94,7 +104,6 @@ class QRReader(Preview, CommonGestures):
 
 
             if text == "SuperQRcode":
-                global gotit
                 if gotit == 1:
                     print("1")
                 elif gotit == 0:
