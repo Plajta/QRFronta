@@ -10,11 +10,11 @@
     </head>
     <body>
     <div class="main">
-        <h1>SuperCringe Admin panel</h1>
+        <h1>PlajtaCorp Admin panel</h1>
         <nav>  
-            <i class="fa fa-plus-square" aria-hidden="true" onclick="CreateNew()"></i>
-            <i class="fa fa-trash" aria-hidden="true" onclick="DeleteAll()"></i>
-            <i class="fa fa-ban" aria-hidden="true" onclick="Abort()"></i>
+            <i class="fa fa-plus-square" aria-hidden="true" onclick="Decision(0)"></i>
+            <i class="fa fa-trash" aria-hidden="true" onclick="Decision(1)"></i>
+            <i class="fa fa-ban" aria-hidden="true" onclick="Decision(2)"></i>
         </nav>
 
         <div id="MainPanel">
@@ -28,42 +28,17 @@
                         <p id="Spec">ID: </p>
                     </div>
                     <div class="RightAlign">
-                        <i class="fa fa-trash" id="UserIcon" aria-hidden="true" onclick="Delete()"></i>
-                    </div>
-                </div>
-                <div class="User">
-                    <div class="LeftAlign">
-                        <p id="Spec">JMÉNO: </p>
-                        <p id="Spec">ID: </p>
-                    </div>
-                    <div class="RightAlign">
-                        <i class="fa fa-trash" id="UserIcon" aria-hidden="true" onclick="Delete()"></i>
-                    </div>
-                </div>
-                <div class="User">
-                    <div class="LeftAlign">
-                        <p id="Spec">JMÉNO: </p>
-                        <p id="Spec">ID: </p>
-                    </div>
-                    <div class="RightAlign">
-                        <i class="fa fa-trash" id="UserIcon" aria-hidden="true" onclick="Delete()"></i>
-                    </div>
-                </div>
-                <div class="User">
-                    <div class="LeftAlign">
-                        <p id="Spec">JMÉNO: </p>
-                        <p id="Spec">ID: </p>
-                    </div>
-                    <div class="RightAlign">
-                        <i class="fa fa-trash" id="UserIcon" aria-hidden="true" onclick="Delete()"></i>
+                        <i class="fa fa-trash" id="UserIcon" aria-hidden="true" onclick=""></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
         <script type="text/javascript" charset="utf-8">
-            var Decisions = [false, false, false]
             var Decision_actions = ["create-new", "remove-all", "abort"] //bruh mohl jsem to udělat v dictionaries
+            var Decision_directions = ["Doopravdy chceš vytvořit novou frontu?",
+                                        "Doopravdy chceš smazat prvky celé fronty?",
+                                        "Doopravdy chceš zrušit celou frontu?"]
 
             var socket = io("127.0.0.1:5000");
             function UpdateValues(data_json){
@@ -85,7 +60,7 @@
                 //load new children
                 for(i = 0; i < data["user_len"]; i++){
                     //parsing the database record
-                    [username, id] = data["user_data"][i].split(",")
+                    [id, username] = data["user_data"][i].split(",")
                     
                     //element definitions
                     var User = document.createElement("div");
@@ -96,15 +71,17 @@
                     var ID = document.createElement("p")
                     var DelIcon = document.createElement("i")
                     
-                    Name.innerHTML = "JMÉNO: " + username;
-                    ID.innerHTML = "ID" + id;
+                    Name.innerHTML = "JMÉNO: " + decodeURIComponent(escape(window.atob(username)));
+                    ID.innerHTML = "ID:" + i;
 
                     //modifying the elements
                     Name.setAttribute("id", "Spec")
                     ID.setAttribute("id", "Spec")
 
-                    DelIcon.classList.add("fa fa-trash")
+                    DelIcon.classList.add("fa")
+                    DelIcon.classList.add("fa-trash")
                     DelIcon.setAttribute("aria-hidden", "true")
+                    DelIcon.setAttribute('onclick', `DeleteSpecific(${i})`)
                     DelIcon.id = "UserIcon"
 
                     RightAlign.classList.add("RightAlign")
@@ -133,44 +110,28 @@
             }
 
             //Some other functions
-            function CreateNew(){
-                var result = confirm("Chceš doopravdy vytvořit novou frontu?")
+            function Decision(index){
+                var result = confirm(Decision_directions[index])
                 if (result){
-                    Decisions[0] = true
+                    socket.emit(Decision_actions[index], "true")
+                    socket.on("is_successful", (data) => {
+                        if(data == "true"){
+                            alert("Operace provedena úspěšně")
+                        } 
+                        else{
+                            alert("Operace neprovedena úspěšně :(")
+                        }
+                    })
                 }
             }
 
-            function DeleteAll(){
-                var result = confirm("Chceš doopravdy smazat všechny záznamy?")
-                if (result){
-                    Decisions[1] = true
-                }
-            }
 
-            function Abort(){
-                var result = confirm("Chceš doopravdy vypnout přihlašování do fronty?")
-                if (result){
-                    Decisions[2] = true
-                }
+            function DeleteSpecific(index){
+                socket.emit("delete-specific", index)
             }
             
             socket.on("connect", function() {
                 setInterval(function(){RequestData(socket)}, 1000)
-
-                for(i = 0; i < Decisions.length; i++){
-                    if(Decisions[i]){
-                        socket.emit(Decision_actions[i], "true")
-                        socket.on("is_successful", (data_true) => {
-                            if(data_true == "true"){
-                                alert("Operace provedena úspěšně")
-                            }
-                            else{
-                                alert("Operace nebyla provedena úspěšně")
-                            }
-                        })
-                        Decisions[i] = false
-                    }
-                }
             })
         </script>
     </body>
