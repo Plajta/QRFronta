@@ -5,6 +5,7 @@ Bruh this is kinda simple lol, why not
 
 import redis
 import uuid
+from misc import *
 
 
 class RedisBase:
@@ -14,7 +15,7 @@ class RedisBase:
     def add(self, useruuid, username):  # For adding people to the end of the queue
         try:
             people = self.retrieve_raw() or ""
-            people = people+str(useruuid)+","+username
+            people = people + str(useruuid) + "," + username
             self.set(people)
         except Exception as E:
             print(E)
@@ -28,10 +29,10 @@ class RedisBase:
         except Exception as E:
             print(E)
 
-    def set(self, people: str):   # For setting the raw contents
+    def set(self, people: str):  # For setting the raw contents
         try:
             if people[-1] != ";":
-                people = people+";"
+                people = people + ";"
             self.Redis.set("people", people)
         except Exception as E:
             print(E)
@@ -45,10 +46,12 @@ class RedisBase:
     def retrieve_all(self):  # Retrieves all data as a list of UUIDs and Names split with a colon
         try:
             people_db = self.Redis.get("people")
-            if people_db == None:people = []
-            else: people = people_db[:-1].split(";")
+            if people_db is None:
+                people = []
+            else:
+                people = people_db[:-1].split(";")
             return people
-            
+
         except Exception as E:
             print(E)
 
@@ -57,7 +60,7 @@ class RedisBase:
             peoplelist = self.retrieve_all()
             people = []
             for peep in peoplelist:
-                people.append(uuid.UUID(peep.split(",")[0]))
+                people.append(peep.split(",")[0])
             return people
         except Exception as E:
             print(E)
@@ -65,26 +68,43 @@ class RedisBase:
     def retrieve_count(self):  # Retrieves the number of entries in the database (people in the queue)
         return len(self.retrieve_all())
 
-    def check(self,uuid):
-        ids = self.retrieve_uuid()
-        index = ids.index(uuid)
-        return index, len(ids)
-
-    def delete(self, toremove: str):
+    def find(self, uuid):
         try:
-            removed = self.retrieve_all()
-            removed.remove(toremove)
-            self.set_list(removed)
+            if isUUID(uuid):
+                ids = self.retrieve_uuid()
+                index = ids.index(uuid)
+                return index, len(ids)
+            else:
+                return None, None
+        except ValueError as E:
+            print(E)
+            return
+
+    def move(self, index, newindex):
+        try:
+            tomove = self.retrieve_all()
+            if newindex >= len(tomove): newindex = len(tomove) - 1
+            tomove.insert(newindex, tomove.pop(index))
+            self.set_list(tomove)
         except Exception as E:
             print(E)
 
-    def delete(self, index: int):
+    def delete(self, delete):
         try:
+            index = 0
+            if isUUID(delete):
+                index = int(self.find(delete)[0])
+            elif isInt(delete):
+                index = int(delete)
+            else:
+                return False
             popped = self.retrieve_all()
             popped.pop(index)
             self.set_list(popped)
+            return True
         except Exception as E:
             print(E)
+            return False
 
     def delete_all(self):
         try:
