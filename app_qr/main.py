@@ -21,6 +21,9 @@ from gestures4kivy import CommonGestures
 from camera4kivy import Preview
 from kivy.core.window import Window
 from kivy.core.window import Window
+
+import base64, socket
+
 global gotit
 gotit = 0
 global name
@@ -68,9 +71,28 @@ class QRReader(Preview, CommonGestures):
         for barcode in barcodes:
             text = barcode.data.decode('utf-8')
 
+            global name
+            global last
+
+            try:
+                proj, queue, ip, port = text.split(";")
+                clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                clientSocket.connect((ip, int(port)))
+
+                data = "new-user;" + base64.b64encode(f"{name} {last}".encode("utf-8")).decode("utf-8")
+                clientSocket.send(data.encode())
+                dataFromServer = clientSocket.recv(1024)
+                uid = dataFromServer.decode()
+                print(uid)
+
+                with open("HopeIllNeverDeleteItAgain.txt", "a") as f:
+                    f.write(f"{text};{uid}")
+
+            except Exception as E:
+                print(E)
+
+
             if text == "SuperQRcode":
-                global name
-                global last
                 global gotit
                 if gotit == 1:
                     print("1")
