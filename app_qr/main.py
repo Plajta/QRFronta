@@ -29,15 +29,13 @@ gotit = 0
 global name
 global last
 
-
-
-
-
 if platform == 'android':
     from jnius import autoclass
     from android.runnable import run_on_ui_thread
     from android import mActivity
+
     View = autoclass('android.view.View')
+
 
     @run_on_ui_thread
     def hide_landscape_status_bar(instance, width, height):
@@ -53,6 +51,7 @@ if platform == 'android':
 elif platform != 'ios':
     # Dispose of that nasty red dot, required for gestures4kivy.
     from kivy.config import Config
+
     Config.set('input', 'mouse', 'mouse, disable_multitouch')
 
 
@@ -61,11 +60,9 @@ class QRReader(Preview, CommonGestures):
         super().__init__(**kwargs)
         self.annotations = []
 
-
     def analyze_pixels_callback(self, pixels, image_size, image_pos, scale, mirror):
 
-
-        pil_image = Image.frombytes(mode='RGBA', size=image_size, data= pixels)
+        pil_image = Image.frombytes(mode='RGBA', size=image_size, data=pixels)
         barcodes = pyzbar.decode(pil_image, symbols=[ZBarSymbol.QRCODE])
         found = []
         for barcode in barcodes:
@@ -102,7 +99,6 @@ class QRReader(Preview, CommonGestures):
             except Exception as E:
                 print(E)
 
-
             if text == "SuperQRcode":
                 if gotit == 1:
                     print("1")
@@ -112,13 +108,13 @@ class QRReader(Preview, CommonGestures):
                 else:
                     print("2")
 
+                # else get new
 
 
-                #else get new
 def my_callback(dt):
     global gotit
     global disconnectcamera
-    if gotit==1:
+    if gotit == 1:
         gotit = 2
         print("change")
         Placet().run()
@@ -126,9 +122,10 @@ def my_callback(dt):
         disconnectcamera.qrreader.disconnect_camera()
         print("disconected")
 
+
 class MyApp(App):
     def build(self):
-        self.qrreader = QRReader(letterbox_color = 'black',aspect_ratio = '16:9')
+        self.qrreader = QRReader(letterbox_color='black', aspect_ratio='16:9')
         if platform == 'android':
             Window.bind(on_resize=hide_landscape_status_bar)
             global gotit
@@ -143,9 +140,9 @@ class MyApp(App):
         event = Clock.schedule_once(self.connect_camera)
         Clock.schedule_interval(my_callback, 0.1)
 
-    def connect_camera(self,dt):
-        self.qrreader.connect_camera(analyze_pixels_resolution = 640,
-                                     enable_analyze_pixels = True)
+    def connect_camera(self, dt):
+        self.qrreader.connect_camera(analyze_pixels_resolution=640,
+                                     enable_analyze_pixels=True)
 
     def on_stop(self):
         global disconnectcamera
@@ -180,17 +177,12 @@ class RegGrid(GridLayout):
         global last
         name = self.name.text
         last = self.lastName.text
-        if name == "" or last == "" :
+        if name == "" or last == "":
             print("write please data")
         else:
             print("Name:", name, "Last Name:", last)
             self.remove_widget(self.submit)
             MyApp().run()
-
-
-
-
-
 
 
 Floatplace = Builder.load_string('''
@@ -208,13 +200,6 @@ FloatLayout:
 ''')
 
 
-
-
-
-
-
-
-
 class Placet(App):
     def build(self):
         return Floatplace
@@ -225,29 +210,36 @@ class Register(App):
     def build(self):
         return RegGrid()
 
+
 class first(App):
     def build(self):
         global layout
         layout = BoxLayout(padding=100)
-        button = Button(text='Start',font_size=40, on_press=self.callback)
+        button = Button(text='Start', font_size=40, on_press=self.callback)
         layout.add_widget(button)
         return layout
-
 
     def callback(self, event):
         global layout
         layout.clear_widgets()
-        layout = BoxLayout(padding=100,orientation = 'vertical')
-        place = Label(text='Place',font_size=40)
-        numbeP = Label(text='10',font_size=60)
+        layout = BoxLayout(padding=100, orientation='vertical')
+        place = Label(text='Place', font_size=40)
+        numbeP = Label(text='10', font_size=60)
         layout.add_widget(place)
         layout.add_widget(numbeP)
-        time = Label(text='time',font_size=40)
-        numbeT = Label(text='10 years',font_size=60)
+        time = Label(text='time', font_size=40)
+        numbeT = Label(text='10 years', font_size=60)
         layout.add_widget(time)
         layout.add_widget(numbeT)
         print("button pressed")
         Register().run()
         return layout
 
-first().run()
+
+with open("HopeIllNeverDeleteItAgain.txt", "r") as f:
+    if f is not None:
+        gotit = 2
+if gotit == 2:
+    Placet().run()
+else:
+    first().run()
