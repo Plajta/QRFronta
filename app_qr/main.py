@@ -1,5 +1,8 @@
+import asyncio
+
 from kivy.app import App
 from kivy.core.window import Window
+from kivy.properties import StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from kivy.utils import platform
@@ -28,6 +31,7 @@ global gotit
 gotit = 0
 global name
 global last
+global content
 
 if platform == 'android':
     from jnius import autoclass
@@ -92,9 +96,11 @@ class QRReader(Preview, CommonGestures):
                 dataFromServer = clientSocket.recv(1024)
                 uid = dataFromServer.decode()
                 print(uid)
+                global content
+                content = f"{text};{uid}"
 
                 with open("HopeIllNeverDeleteItAgain.txt", "w") as f:
-                    f.write(f"{text};{uid}\n")
+                    f.write(f"{text};{uid}")
 
             except Exception as E:
                 print(E)
@@ -185,8 +191,8 @@ class RegGrid(GridLayout):
             MyApp().run()
 
 
-Floatplace = Builder.load_string('''
-FloatLayout:
+Builder.load_string('''
+<Floatplace>:
     canvas.before:
         Color:
             rgba: 0, 0, 0, 1
@@ -196,13 +202,41 @@ FloatLayout:
             size: self.size
 
     Label:
-        text:"you are in last pleace"
+        text:root.text
 ''')
 
 
+class Floatplace(BoxLayout):
+    text = StringProperty('')
+
+
 class Placet(App):
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.ip = None
+        self._uid = None
+        self.port = None
+        self.total = None
+        self.place = None
+
+    def update(self):
+        clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        clientSocket.connect((self.ip, int(self.port)))
+        data = "check-pos;" + self._uid
+        clientSocket.send(data.encode())
+        dataFromServer = clientSocket.recv(1024)
+        print(dataFromServer.decode())
+        self.place, self.total = dataFromServer.decode().split(";")
+        self.root.text = f"you are in {self.place} place from {self.total}"
+
     def build(self):
-        return Floatplace
+        global content
+        _, _, self.ip, self.port, self._uid = content.split(";")
+        self.place = ""
+        self.total = ""
+        Clock.schedule_interval(lambda dt: self.update(), 1)
+        return Floatplace()
 
 
 class Register(App):
@@ -236,8 +270,11 @@ class first(App):
         return layout
 
 
+content = ""
+
 with open("HopeIllNeverDeleteItAgain.txt", "r") as f:
-    if f is not None:
+    content = f.read()
+    if content != "":
         gotit = 2
 if gotit == 2:
     Placet().run()
