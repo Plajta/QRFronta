@@ -21,10 +21,14 @@ from gestures4kivy import CommonGestures
 from camera4kivy import Preview
 from kivy.core.window import Window
 from kivy.core.window import Window
-
+global gotit
+gotit = 0
 global name
 global last
-Window.show()
+
+
+
+
 
 if platform == 'android':
     from jnius import autoclass
@@ -63,20 +67,39 @@ class QRReader(Preview, CommonGestures):
         found = []
         for barcode in barcodes:
             text = barcode.data.decode('utf-8')
-            print(text)
+
             if text == "SuperQRcode":
                 global name
                 global last
-                Window.close()
-                print("closed")
-                
+                global gotit
+                if gotit == 1:
+                    print("1")
+                elif gotit == 0:
+                    gotit = 1
+                    print(text)
+                else:
+                    print("2")
+
+
+
                 #else get new
+def my_callback(dt):
+    global gotit
+    global disconnectcamera
+    if gotit==1:
+        gotit = 2
+        print("change")
+        Placet().run()
+        print("disconect")
+        disconnectcamera.qrreader.disconnect_camera()
+        print("disconected")
 
 class MyApp(App):
     def build(self):
         self.qrreader = QRReader(letterbox_color = 'black',aspect_ratio = '16:9')
         if platform == 'android':
             Window.bind(on_resize=hide_landscape_status_bar)
+            global gotit
         return self.qrreader
 
     def on_start(self):
@@ -85,14 +108,18 @@ class MyApp(App):
     def start_app(self):
         self.dont_gc = None
         # Can't connect camera till after on_start()
-        Clock.schedule_once(self.connect_camera)
+        event = Clock.schedule_once(self.connect_camera)
+        Clock.schedule_interval(my_callback, 0.1)
 
     def connect_camera(self,dt):
         self.qrreader.connect_camera(analyze_pixels_resolution = 640,
                                      enable_analyze_pixels = True)
 
     def on_stop(self):
+        global disconnectcamera
+        disconnectcamera = self
         self.qrreader.disconnect_camera()
+
 
 class RegGrid(GridLayout):
     def __init__(self, **kwargs):
@@ -125,20 +152,41 @@ class RegGrid(GridLayout):
             print("write please data")
         else:
             print("Name:", name, "Last Name:", last)
+            self.remove_widget(self.submit)
             MyApp().run()
 
-class Place(App):
+
+
+
+
+
+
+Floatplace = Builder.load_string('''
+FloatLayout:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 1
+        Rectangle:
+            # self here refers to the widget i.e FloatLayout
+            pos: self.pos
+            size: self.size
+
+    Label:
+        text:"you are in last pleace"
+''')
+
+
+
+
+
+
+
+
+
+class Placet(App):
     def build(self):
-        layout = BoxLayout(padding=100,orientation = 'vertical')
-        place = Label(text='Place',font_size=40)
-        numbeP = Label(text='10',font_size=60)
-        layout.add_widget(place)
-        layout.add_widget(numbeP)
-        time = Label(text='time',font_size=40)
-        numbeT = Label(text='10 years',font_size=60)
-        layout.add_widget(time)
-        layout.add_widget(numbeT)
-        return layout
+        return Floatplace
+
 
 class Register(App):
 
