@@ -65,6 +65,11 @@ class RedisBase:
     def retrieve_count(self):  # Retrieves the number of entries in the database (people in the queue)
         return len(self.retrieve_all())
 
+    def check(self,uuid):
+        ids = self.retrieve_uuid()
+        index = ids.index(uuid)
+        return index, len(ids)
+
     def delete(self, toremove: str):
         try:
             removed = self.retrieve_all()
