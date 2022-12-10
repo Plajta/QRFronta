@@ -13,8 +13,9 @@
             <i class="fa fa-plus-square" aria-hidden="true" onclick="Decision(0)"></i>
             <i class="fa fa-trash" aria-hidden="true" onclick="Decision(1)"></i>
             <i class="fa fa-ban" aria-hidden="true" onclick="Decision(2)"></i>
-            <i class="fa fa-bell" aria-hidden="true" onclick="Decision(3)"></i>
         </nav>
+
+       
 
         <div id="MainPanel">
             <p id="Count">Počet uživatelů: </p>
@@ -24,6 +25,14 @@
                 
             </div>
         </div>
+
+        <aside>
+            <div class="bell">
+            <i class="fa fa-bell fa-5x" aria-hidden="true" onclick="Decision(3)"></i>
+            </div>
+        </aside>
+
+
     </div>
         <script type="text/javascript" charset="utf-8">
             var Decision_actions = ["create-new", "remove-all", "abort", "next"] //bruh mohl jsem to udělat v dictionaries
