@@ -19,6 +19,8 @@ redisbase = RedisBase()
 #this is not secure
 Payload.max_decode_packets = 100
 Abort = False
+Last_Users = None
+Count = []
 
 with open("credentials.yml", "r") as stream:
         try:
@@ -62,6 +64,8 @@ def login():
 
 @socketio.on('message')
 def handle_message(data):
+    global Count
+
     print('received message: ' + data["data"])
 
     if data["data"] == "request-data" and Abort == False:
@@ -82,7 +86,27 @@ def handle_message(data):
                 "user_len": len(users),
                 "user_data": users
             }
+        
+        #setting timestamp
+        for i in range(data_dict["user_len"]):
+            try:
+                Count[i] += 1
+            except Exception as E:
+                Count.append(1)
 
+        print(Count)
+        Count = Count[:data_dict["user_len"] - 1]
+
+        #getting mean
+        inc = 0
+        for elem in Count: inc += elem
+
+        if len(Count) == 0: mins = 0
+        else: mins = round(inc / len(Count))
+
+        data_dict["time"] = mins
+
+        #sending data
         data_json = json.dumps(data_dict)
         print(data_json)
         
@@ -112,3 +136,7 @@ def remove_specific(data):
 
 if __name__ == "__main__":
     socketio.run(app, host="127.0.0.1", port=5000)
+
+@socketio.on("next")
+def call_next():
+    redisbase.delete(0)
