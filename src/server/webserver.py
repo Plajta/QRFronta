@@ -1,9 +1,14 @@
-from flask import Flask, render_template, request
+
+from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO, send, emit
 import yaml
 import json
 from engineio.payload import Payload
 import time
+
+#encoding
+import base64
+import uuid
 
 # custom import
 from database import RedisBase
@@ -21,6 +26,7 @@ Payload.max_decode_packets = 100
 Abort = False
 Last_Users = None
 Count = []
+mins = 0
 
 with open("credentials.yml", "r") as stream:
         try:
@@ -57,6 +63,40 @@ def login():
         return render_template("index.html")
     else:
         return "Nepovedlo se :(, špatné jméno nebo heslo"
+
+@app.route("/front")
+def register():
+    return render_template("register.html")
+
+@app.route("/user_post", methods = ['POST'])
+def user_interface_post():
+
+    username = request.form['username']
+
+    UUID = uuid.uuid1()
+    data = base64.b64encode(username.encode("utf-8")).decode("utf-8")
+    redisbase.add(UUID, data)
+
+    done = False
+    users = redisbase.retrieve_all()
+    for elem in users:
+        if data in elem:
+            done = True
+            break
+    
+    if(done):
+        return redirect(f"http://localhost:5000/user/{data}")
+    else:
+        return "Nepovedlo se! Bohužel jste nebyl zařazen do fronty"
+
+@app.route("/user/<string:data>")
+def user_interface(data: str):
+    print(data)
+    return render_template("user.html")
+
+@app.route("/error")
+def error():
+    return render_template("error.html")
 
 #
 # SocketIO
@@ -112,6 +152,38 @@ def handle_message(data):
         
         time.sleep(1)
         socketio.emit("update", data_json)
+
+@socketio.on("request-spec")
+def handle_individual_request(data):
+    if Abort == False:
+        users = redisbase.retrieve_all()
+
+        if users == None:
+            socketio.emit("update", "false")
+        elif len(users) == 0:
+            socketio.emit("update", "false")
+        else:
+            Found = False
+            obj_order = None
+
+            for iter_count, elem in enumerate(users):
+                if data["request-data-specific"] in elem:
+                    #it exists!
+                    Found = True
+                    obj_order = iter_count
+            
+            if not Found:
+                socketio.emit("update", "false")
+            else:
+                #found it!
+                data_dict = {
+                    "order": obj_order,
+                    "timespan": mins
+                }
+
+                socketio.emit("update", data_dict)
+
+        
 
 @socketio.on("create-new")
 def create_new(data):
