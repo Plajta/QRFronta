@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <link rel="icon" type="image/x-icon" href="../static/img/Q.svg">
+  <meta charset="UTF-8">
+  <title>PlajtaCorp Panel</title>
+  <link rel="stylesheet" href="../static/styles/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1 id="MainMessage">Povedlo se! Jste registrováni do fronty!</h1>
+        <p id="order">Vaše pořadí: </p>
+        <p id="timespan">Předpokládaný čas čekání: </p>
+    </div>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io("127.0.0.1:5000");
+        var queryString = window.location.href;
+        var username = queryString.replace("http://localhost:5000/user/")
+
+        function UpdateValues(choice, data=null){
+            var MainMessage = document.getElementById("MainMessage")
+            var order = document.getElementById("order")
+            var timespan = document.getElementById("timespan")    
+
+            order.innerHTML = "Vaše pořadí " + data["order"]
+            timespan.innerHTML = "Předpokládaný čas čekání: " + data["timespan"]
+            
+        }
+
+
+        function RequestData(socket){
+            socket.emit("request-spec", {"request-data-specific": username});
+            socket.on("update", (data) => {
+                console.log("Update")
+
+                if (typeof data === 'string' || data instanceof String){
+                    // it's a string, not working
+
+                    if(data == "false"){ //this is kinda useless but double checking i guess
+                        UpdateValues()
+                    }
+                }
+                else{
+                    // working
+                    UpdateValues()
+                }
+            })
+        }
+
+        socket.on("connect", function() {
+            setInterval(function(){RequestData(socket)}, 1000)
+        })
+    </script>
+</body>
+</html>
